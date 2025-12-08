@@ -16,13 +16,13 @@
 To run the dev server for your app, use:
 
 ```sh
-npx nx serve microservice
+npx nx serve gateway
 ```
 
 To create a production bundle:
 
 ```sh
-npx nx build microservice
+npx nx build gateway
 ```
 
 To see all available targets to run for a project, run:
