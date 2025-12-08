@@ -1,5 +1,5 @@
 {
-  "name": "@microservice/microservice",
+  "name": "gateway",
   "version": "0.0.1",
   "private": true,
   "nx": {
@@ -7,11 +7,11 @@
       "build": {
         "executor": "nx:run-commands",
         "options": {
-          "command": "webpack-cli build",
+          "command": "webpack-cli build --config webpack.config.js",
           "args": [
             "--node-env=production"
           ],
-          "cwd": "apps/microservice"
+          "cwd": "apps/gateway"
         },
         "configurations": {
           "development": {
@@ -28,8 +28,8 @@
         "cache": true,
         "executor": "@nx/js:prune-lockfile",
         "outputs": [
-          "{workspaceRoot}/apps/microservice/dist/package.json",
-          "{workspaceRoot}/apps/microservice/dist/package-lock.json"
+          "{workspaceRoot}/apps/gateway/dist/package.json",
+          "{workspaceRoot}/apps/gateway/dist/package-lock.json"
         ],
         "options": {
           "buildTarget": "build"
@@ -41,7 +41,7 @@
         ],
         "cache": true,
         "outputs": [
-          "{workspaceRoot}/apps/microservice/dist/workspace_modules"
+          "{workspaceRoot}/apps/gateway/dist/workspace_modules"
         ],
         "executor": "@nx/js:copy-workspace-modules",
         "options": {
@@ -63,15 +63,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@microservice/microservice:build",
+          "buildTarget": "gateway:build",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@microservice/microservice:build:development"
+            "buildTarget": "gateway:build:development"
           },
           "production": {
-            "buildTarget": "@microservice/microservice:build:production"
+            "buildTarget": "gateway:build:production"
           }
         }
       },

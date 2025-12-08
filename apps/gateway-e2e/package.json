@@ -1,10 +1,10 @@
 {
-  "name": "@microservice/microservice-e2e",
+  "name": "gateway-e2e",
   "version": "0.0.1",
   "private": true,
   "nx": {
     "implicitDependencies": [
-      "@microservice/microservice"
+      "gateway"
     ],
     "targets": {
       "e2e": {
@@ -13,12 +13,12 @@
           "{projectRoot}/test-output/jest/coverage"
         ],
         "options": {
-          "jestConfig": "apps/microservice-e2e/jest.config.cts",
+          "jestConfig": "apps/gateway-e2e/jest.config.cts",
           "passWithNoTests": true
         },
         "dependsOn": [
-          "@microservice/microservice:build",
-          "@microservice/microservice:serve"
+          "gateway:build",
+          "gateway:serve"
         ]
       }
     }
