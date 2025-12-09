@@ -1,10 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService,@Inject("KAFKA_SERVICE")private readonly kafkaClient: ClientKafka) {}
 
   @Get()
   getData() {
@@ -14,6 +14,6 @@ export class AppController {
   handleOrderCreated(@Payload() order:any)
   {
     console.log('new order recieved',order);
-    
+    this.kafkaClient.emit("process-payment",order);
   }
 }
