@@ -16,7 +16,7 @@ export class AppController {
   {
    console.log('Payment in process:', data);
 
-    this.kafkaClient.emit("payment succed",data)
+    this.kafkaClient.emit("payment-succeed",data)
   }
 
 }
