@@ -21,7 +21,7 @@ async function bootstrap() {
     }
   });
   await app.listen();
-  Logger.log(`🚀 Kafka microservice is running and listening for messages`);
+  Logger.log(`  order-service is running and listening for messages`);
 }
 
 bootstrap();

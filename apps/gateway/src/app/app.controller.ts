@@ -13,6 +13,6 @@ export class AppController {
   @Post('order')
   createOrder(@Body() order: any) {
    this.kafkaClient.emit('order_created', JSON.stringify(order));
-    return {status: 'Order Created'}
+    return {status: 'Order Created',order}
   }
 }

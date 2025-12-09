@@ -1,30 +1,36 @@
-FROM docker.io/node:lts-alpine
+FROM node:lts-alpine AS builder
+
+# Enable corepack (includes pnpm)
+RUN corepack enable
 
 WORKDIR /app
 
-# Copy dependency definitions
-COPY package*.json ./
+# Copy root package definitions
+COPY package.json pnpm-lock.yaml ./
+
+# Copy gateway package definition
 COPY apps/gateway/package.json ./apps/gateway/
-COPY tsconfig*.json ./
 
-# Install dependencies (including devDependencies because we need typescript)
-RUN npm ci
+# Install dependencies according to lockfile
+RUN pnpm install --frozen-lockfile
 
-# Copy source code
-COPY apps/gateway ./apps/gateway
+# Copy the entire monorepo source
+COPY . .
 
-# Build the gateway app
-WORKDIR /app/apps/gateway
-RUN npx tsc -p tsconfig.app.json
+# Build only the gateway app
+RUN pnpm --filter @microservice/gateway build
 
-# Prune dev dependencies for smaller final image (optional but recommended)
-RUN npm prune --production
+# ---- Production Image ----
+FROM node:lts-alpine AS runner
 
-# Final working directory and command
-WORKDIR /app/apps/gateway
+RUN corepack enable
 
-# Most common case: outDir: "./dist" → file is dist/main.js
-# If your tsconfig outputs to dist/app/main.js, change the CMD accordingly
+WORKDIR /app
+
+# Copy only necessary runtime files from builder
+COPY --from=builder /app/apps/gateway/dist ./dist
+COPY --from=builder /app/apps/gateway/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
 
 ENV NODE_ENV=production
 ENV PORT=3000
@@ -32,8 +38,4 @@ ENV KAFKA_BROKER=kafka:9092
 
 EXPOSE 3000
 
-# Correct path (99% of NestJS/Nx projects)
 CMD ["node", "dist/main.js"]
-
-# If your tsconfig really outputs to dist/app/main.js, use this instead:
-# CMD ["node", "dist/app/main.js"]
